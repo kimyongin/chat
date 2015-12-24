@@ -1,0 +1,22 @@
+﻿[
+   {
+      "fields": {
+         "adLinkUrl": "https://www.facebook.com/groups/OpenCPP/",
+         "adImageUrl": "/banner/opencpp.png",
+         "height": 80,
+         "width": 300,
+         "background": "ffffff",
+         "isActive": true
+      }
+   },
+   {
+      "fields": {
+         "adLinkUrl": "https://www.facebook.com/groups/serverside/",
+         "adImageUrl": "/banner/serverside.png",
+         "height": 80,
+         "width": 300,
+         "background": "ffffff",
+         "isActive": true
+      }
+   }
+]

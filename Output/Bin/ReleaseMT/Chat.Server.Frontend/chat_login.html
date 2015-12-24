@@ -1,0 +1,29 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <title>LIVE Talk</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <script src="/js/lib/jquery-1.11.3.min.js"></script>
+    <script src="/js/lib/angular.js"></script>
+    <script src="/js/lib/angular-route.js"></script>
+    <script src="/js/chat_login.js"></script>
+    <script type="text/javascript">
+        angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
+    </script>
+</head>
+<body class='login-body' ng-app="myChatLogin" ng-controller="myChatLoginController">
+
+    <div class='wrapper-outer'>
+        <img class='logo' src="/img/hdpi/logo.png" alt="LIVE Talk" />
+        <div class='wrapper-inner'>
+            <input type="text" class='name' placeholder="내 이름" autofocus ng-model="MyName" ng-enter="login()" />
+            <button class='login' ng-click="login()">로그인
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

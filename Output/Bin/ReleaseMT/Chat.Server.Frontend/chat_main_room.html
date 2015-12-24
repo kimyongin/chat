@@ -1,0 +1,28 @@
+﻿<div class="list-filter">
+    <input type="search" class="list-filter-input" ng-model="q" placeholder="채팅방 검색" aria-label="filter rooms" />
+</div>
+
+<div class="list-wrapper">
+
+    <div class="list-room-container" ng-show="rooms.length">
+        <ul class="list-room">
+            <li ng-repeat="room in rooms | orderBy:'-last_time' | filter:q as results"
+                ng-dblclick="make_room(room.room_users)"
+                class="list-item {{selected}}"
+                ng-click="setSelected(this)"
+                context-menu="menuOptionsForRoom" context-menu-click="right" context-menu-width="86">
+                <div class="list-room-preview">
+                    <span style="display:none;">{{room.room_name}}</span>
+                    <span class="list-room-user common-text-ellipsis">{{room.room_nick_name}}</span>
+                    <span class="list-room-message common-text-ellipsis">{{room.last_message}}</span>
+                </div>
+                <span class="list-room-date">{{room.last_time}}</span>
+                <span class="list-room-count" ng-show="room.unread_count > 0">{{room.unread_count}}</span>
+            </li>
+            <li ng-show="!rooms.length">진행중인 대화가 없습니다.</li>
+        </ul>
+    </div>
+
+    <div class="list-room-none" ng-show="!rooms.length">진행중인 대화가 없습니다.</div>
+
+</div>
