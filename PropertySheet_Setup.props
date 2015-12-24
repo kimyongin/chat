@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <!-- wxSuffixStatic -->
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='DebugS' or '$(Configuration)'=='DebugSMT' or '$(Configuration)'=='ReleaseS' or '$(Configuration)'=='ReleaseSMT'">
+    <wxSuffixStatic>S</wxSuffixStatic>
+  </PropertyGroup>  
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug'  or '$(Configuration)'=='DebugMT'  or '$(Configuration)'=='Release'  or '$(Configuration)'=='ReleaseMT'">
+    <wxSuffixStatic>
+	</wxSuffixStatic>
+  </PropertyGroup>  
+  
+  <!-- wxSuffixRuntime -->
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='DebugMT' or '$(Configuration)'=='DebugSMT' or '$(Configuration)'=='ReleaseMT' or '$(Configuration)'=='ReleaseSMT'">
+    <wxSuffixRuntime>MT</wxSuffixRuntime>
+  </PropertyGroup>  
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug'   or '$(Configuration)'=='DebugS'   or '$(Configuration)'=='Release'   or '$(Configuration)'=='ReleaseS'">
+    <wxSuffixRuntime>
+	</wxSuffixRuntime>
+  </PropertyGroup>
+  
+  <!-- wxSuffixDebug -->
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug'   or '$(Configuration)'=='DebugMT'   or '$(Configuration)'=='DebugS'   or '$(Configuration)'=='DebugSMT'">
+    <wxSuffixDebug>d</wxSuffixDebug>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='ReleaseMT' or '$(Configuration)'=='ReleaseS' or '$(Configuration)'=='ReleaseSMT'">
+    <wxSuffixDebug>
+	</wxSuffixDebug>
+  </PropertyGroup>  
+  
+  <!-- wxSuffixUnicode -->
+  <PropertyGroup Label="UserMacros" Condition="'$(CharacterSet)' =='Unicode'">
+    <wxSuffixUnicode>u</wxSuffixUnicode>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition="'$(CharacterSet)' !='Unicode'">
+    <wxSuffixUnicode>
+	</wxSuffixUnicode>
+  </PropertyGroup>
+    
+  <!-- wxOutDir -->
+  <PropertyGroup Label="UserMacros">
+    <wxOutDir>$(SolutionDir)Output\Bin\$(Configuration)\</wxOutDir>
+  </PropertyGroup>
+  
+  <!-- wxTempDir -->
+  <PropertyGroup Label="UserMacros">
+    <wxTempDir>$(SolutionDir)Output\Temp\$(ProjectName)\$(Configuration)\</wxTempDir>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="UserMacros">
+    <wxNameSuffix>$(wxSuffixStatic)$(wxSuffixRuntime)$(wxSuffixDebug)$(wxSuffixUnicode)</wxNameSuffix>    
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <BuildMacro Include="wxSuffixStatic">
+      <Value>$(wxSuffixStatic)</Value>
+    </BuildMacro>
+    <BuildMacro Include="wxSuffixRuntime">
+      <Value>$(wxSuffixRuntime)</Value>
+    </BuildMacro>
+    <BuildMacro Include="wxSuffixDebug">
+      <Value>$(wxSuffixDebug)</Value>
+    </BuildMacro>
+    <BuildMacro Include="wxSuffixUnicode">
+      <Value>$(wxSuffixUnicode)</Value>
+    </BuildMacro>
+    <BuildMacro Include="wxOutDir">
+      <Value>$(wxOutDir)</Value>
+    </BuildMacro>	
+    <BuildMacro Include="wxTempDir">
+      <Value>$(wxTempDir)</Value>
+    </BuildMacro>
+	<BuildMacro Include="wxNameSuffix">
+      <Value>$(wxNameSuffix)</Value>
+    </BuildMacro>
+  </ItemGroup>
+  
+</Project>

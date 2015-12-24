@@ -1,0 +1,164 @@
+﻿<!doctype html>
+<html ng-app="myChatRoom" ng-controller="myChatRoomController" lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <title>LIVE TALK - {{room_title}}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="stylesheet" href="css/style.css" type="text/css"> 
+    <script src="/js/lib/jquery-1.11.3.min.js"></script>
+    <script src="/js/lib/angular.js"></script>
+    <script src="/js/lib/angular-route.js"></script>
+    <script src="/js/lib/ui-bootstrap-tpls-0.13.0.js"></script>
+    <script src="/js/lib/js-date-format.js"></script>
+    <script src="/js/lib/ng-context-menu.js"></script>
+    <script src="/js/lib/ng-websocket.js"></script>
+    <script src="/js/lib/common.js"></script>
+    <script src="/js/lib/ui-utils.js"></script>
+    <script src="/js/chat_room.js"></script>
+</head>
+<body class="page-chat">
+
+    <div class="header">
+        <img class="logo"/>
+        <h2 class="title">{{room_title}}</h2>
+        <a href="#"
+           context-menu="menuOptions"
+           context-menu-click="left"
+           context-menu-width="115"
+           context-menu-selected="#headerMenu">
+            <img class="menu" id="headerMenu">
+        </a>
+    </div>
+
+    <div class="user-popup" id="userPopup" style="display:none;">
+        <div class="user-list">
+            <h2>대화상대 보기</h2>
+            <ul>
+                <li ng-repeat="user in users | orderBy:'name'">
+                    {{user.name}}
+                </li>
+            </ul>
+            <div class="user-list-close">
+                <a href="#" title="목록닫기" onclick="userListClose();">×</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="invite-popup" id="invitePopup" style="display:none;">
+        <div class="invite-list">
+            <h2>친구 초대하기</h2>
+            <ul>
+                <li ng-repeat="friend in friends | orderBy:'name'" class="list-item" onclick="triggerClick(this, 'friendCheck'); inviteLayoutInit();">
+                    <span class=" list-friend-checkbox"><input type="checkbox" name="friendCheck" ng-model="friend.is_checked" onclick="checkClick(event);" /></span>
+                    <span class="list-friend-name">{{friend.name}}</span>
+                </li>
+            </ul>
+            <div class="list-friend-none" ng-show="!friends.length">접속중인 친구가 없습니다.</div>
+            <div class="invite-list-close">
+                <a href="#" title="목록닫기" onclick="inviteListClose();">×</a>
+            </div>
+        </div>
+
+        <div class="group-user-detail" id="groupUserDetail">
+            <div class="group-user-added">
+                <span ng-repeat="friend in friends | orderBy:'name'" ng-if="friend.is_checked == true">{{friend.name}}</span>
+                <div class="group-user-none" ng-show="countCheckedFriend == 0">초대상대를 선택 해주세요</div>
+            </div>
+            <div class="group-user-button">
+                <button class="type-normal"
+                        ng-class="{'disabled':selectedCount()==0}"
+                        ng-click="invite()">
+                    초대
+                </button>
+                <button class="type-sub" onclick="inviteListClose();">취소</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-inner">
+            <div class="chat-message-more" ng-show="messages[0].seq - startReadSeq > 1">
+                <a href="#" ng-click="more()">이전대화 더 보기({{messages[0].seq-1 - startReadSeq}})</a>
+            </div>
+            <div class='chat-message-unit chat-message-date' ng-show="messages[0].seq - startReadSeq > 0">
+                <div class="chat-content-wrap">
+                    <span class="chat-content"><xmp>{{messages[0].time.substr(0,10)}}</xmp></span>
+                </div>
+            </div>
+            <div ng-repeat="message in messages">
+                <!-- 시스템, 날짜 메세지 -->                
+                <div ng-if="message.seq > startReadSeq && 'SYSTEM'==message.user_name" class="chat-message-unit"
+                     ng-class="{'chat-message-system':'SYSTEM'==message.user_name,'chat-message-date':'DATE'==message.user_name}">
+                    <div class="chat-content-wrap">
+                        <span class="chat-content"><xmp>{{message.content}}</xmp></span>
+                    </div>
+                </div>
+                <!-- 날짜 메세지 -->
+                <div ng-if="message.seq > startReadSeq && 'DATE'==message.user_name" class="chat-message-unit chat-message-date">
+                    <div class="chat-content-wrap">
+                        <span class="chat-content"><xmp>{{message.content}}</xmp></span>
+                    </div>
+                </div>
+                <!-- 다른사람이 보낸 메세지 -->
+                <div ng-if="message.seq > startReadSeq && MyName!=message.user_name && 'SYSTEM'!=message.user_name && 'DATE'!=message.user_name" class="chat-message-unit">
+                    <span class="chat-name">{{message.user_name}}</span>
+                    <span class="chat-type" style="display:none;">{{message.type}}</span>
+                    <div class="chat-content-wrap">
+                        <div class="chat-content"><xmp>{{message.content}}</xmp></div>
+                        <div class="chat-message-info">
+                            <span class="chat-count" ng-class="{'chat-count-zero': message.unread_count==0}">{{message.unread_count}}</span>
+                            <span class="chat-time">{{message.time | time}}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 내가 보낸 메세지 -->
+                <div ng-if="message.seq > startReadSeq && MyName==message.user_name" class="chat-message-unit chat-message-me">
+                    <span class="chat-name">{{message.user_name}}</span>
+                    <span class="chat-type" style="display:none;">{{message.type}}</span>
+                    <div class="chat-content-wrap">
+                        <div class="chat-message-info">
+                            <span class="chat-count" ng-class="{'chat-count-zero': message.unread_count==0}">{{message.unread_count}}</span>
+                            <span class="chat-time">{{message.time | time}}</span>
+                        </div>
+                        <div class="chat-content"><xmp>{{message.content}}</xmp></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-content-input-wrap">
+        <div class="chat-content-input-inner">
+            <span class="chat-content-input-span">
+                <textarea class="chat-content-text"
+                          id="chat-content-text"
+                          ng-model="content"
+                          ng-focus='seq()'
+                          ng-keyup="keyUp($event)"
+                          ng-keydown="keyDown($event)"></textarea>
+            </span>
+            <button ng-click="send()"
+                    style="ime-mode:disabled;"
+                    class=" type-normal chat-content-send">
+                전송
+            </button>
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="state.html">
+        <div class="modal-header">
+            <h3 class="modal-title">접속상태 안내</h3>
+        </div>
+        <div class="modal-body">
+            {{state.message}}<br>
+            {{state.messageEx}}
+        </div>
+        <div class="modal-footer">
+            <button class="type-sub" ng-click="close()">닫기</button>
+        </div>
+    </script>
+
+</body>
+</html>

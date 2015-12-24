@@ -1,0 +1,85 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <title>LIVE Talk</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <script src="/js/lib/jquery-1.11.3.min.js"></script>
+    <script src="/js/lib/angular.js"></script>
+    <script src="/js/lib/angular-route.js"></script>
+    <script src="/js/lib/ui-bootstrap-tpls-0.13.0.js"></script>
+    <script src="/js/lib/ng-websocket.js"></script>
+    <script src="/js/lib/ng-context-menu.js"></script>
+    <script src="/js/lib/common.js"></script>
+    <script src="/js/banner.js"></script>
+    <script src="/js/chat_main.js"></script>
+    <script type="text/javascript">
+        angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
+        var images = new Array()
+        function preload() {
+            for (i = 0; i < preload.arguments.length; i++) {
+                images[i] = new Image()
+                images[i].src = preload.arguments[i]
+            }
+        }
+        preload(
+            "/img/hdpi/loop_mod.gif",
+            "/img/hdpi/sidemenu_hover.png",
+            "/img/hdpi/sidemenu_on.png",
+            "/img/hdpi/sidemenu_off.png",
+            "/img/hdpi/tab_user_hover.png",
+            "/img/hdpi/tab_user_on.png",
+            "/img/hdpi/tab_user_off.png",
+            "/img/hdpi/tab_room_hover.png",
+            "/img/hdpi/tab_room_on.png",
+            "/img/hdpi/tab_room_off.png"
+        )
+    </script>
+</head>
+<body ng-app="myChatMain" id="main" ng-controller="myChatMainController" ondragstart="return false;" onselectstart="return false;">
+    <div class="header">
+        <img class="logo" />
+        <div class="tab">
+            <a href="chat_main/friend" id="menu-friend" onclick="mainTabChange(this);">
+                <div class="tab_item_wrap">
+                    <img class="tab_item_img selected" id="tabUser" />
+                </div>
+            </a>
+            <a href="chat_main/room" id="menu-room" onclick="mainTabChange(this);">
+                <div class="tab_item_wrap">
+                    <img class="tab_item_img" id="tabRoom" />
+                    <span class="tab_item_detail" ng-show="unreadCount() > 0">{{unreadCount()}}</span>
+                </div>
+            </a>
+        </div>
+        <a href="#" context-menu="menuOptions"
+           context-menu-click="left"
+           context-menu-width="90"
+           context-menu-selected="#headerMenu">
+            <img class="menu" id="headerMenu">
+        </a>
+    </div>
+    <div ng-view></div>
+    <div banner-box="bannerItem" ng-controller="bannerCtrl" ng-show="bannerShow"></div>
+
+    <script type="text/ng-template" id="state.html">
+        <div class="modal-header">
+            <h3 class="modal-title">접속상태 안내</h3>
+        </div>
+        <div class="modal-body">
+            {{state.message}}<br>
+            {{state.messageEx}}
+            <div class="modal-body-loop" ng-show="state.type=='reconnect'">
+                <img src="/img/hdpi/loop_mod.gif" alt="in progress..." />
+            </div>
+        </div>
+        <div class="modal-footer" ng-show="state.type=='close'">
+            <button class="type-sub" ng-click="close()">닫기</button>
+            <button id="modalReconnectBtn" class="type-sub" ng-click="dismiss()" ng-hide="state.type=='close'">재접속</button>
+        </div>
+    </script>
+
+</body>
+</html>

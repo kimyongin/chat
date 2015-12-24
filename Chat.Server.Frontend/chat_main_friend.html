@@ -1,0 +1,46 @@
+﻿<div class="list-filter">
+    <input type="search" class="list-filter-input" ng-model="q" placeholder="친구 검색" aria-label="filter friends" />
+</div>
+
+<div class="list-wrapper">
+    <div class="list-friend-container">
+        <ul class="list-friend">
+            <li>
+                <div class="list-friend-me">
+                    <span class="list-friend-name">{{MyDecName}} [나]</span>
+                </div>
+            </li>
+        </ul>
+        <div class="list-friend-separator">친구 ({{users.length}})</div>
+        <ul class="list-friend" ng-show="users.length">
+            <li ng-repeat="user in users | orderBy:'name' | filter:q as results"
+                class="list-item {{selected}}"
+                ng-dblclick="make(user.name);"
+                ng-click="setSelected(this)"
+                onclick="triggerClick(event, this, 'userCheck'); layoutInit();">
+                <div class="list-friend-other">
+                    <span class="list-friend-checkbox">
+                        <input type="checkbox" name="userCheck" ng-model="user.is_checked" style="display:none;" onclick="checkClick(event);" />
+                    </span>
+                    <span class="list-friend-name">{{user.name}}</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="list-friend-none" ng-show="!users.length">접속중인 친구가 없습니다.</div>
+
+    <div class="group-user-detail" id="groupUserDetail" style="display:none;">
+        <div class="group-user-added">
+            <span ng-repeat="user in users" ng-if="user.is_checked == true">{{user.name}}</span>
+            <div class="group-user-none" ng-show="countCheckedUser == 0">대화상대를 선택 해주세요</div>
+        </div>
+        <div class="group-user-button">
+            <button class="type-normal" ng-click="make_group()"
+                    ng-class="{'disabled':selectedCount()==0}">
+                시작
+            </button>
+            <button class="type-sub" onclick="groupChatShow(false);">취소</button>
+        </div>
+    </div>
+</div>

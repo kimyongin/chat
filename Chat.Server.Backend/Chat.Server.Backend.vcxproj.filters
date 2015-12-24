@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="HttpServer.cpp" />
+    <ClCompile Include="MyRequestHandler.cpp" />
+    <ClCompile Include="WebSocketMessage.cpp" />
+    <ClCompile Include="ChatRepository.cpp" />
+    <ClCompile Include="ChatRoom.cpp" />
+    <ClCompile Include="ChatService.cpp" />
+    <ClCompile Include="Api.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HttpServer.h" />
+    <ClInclude Include="MyRequestHandler.h" />
+    <ClInclude Include="WebSocketMessage.h" />
+    <ClInclude Include="ChatRepository.h" />
+    <ClInclude Include="ChatRoom.h" />
+    <ClInclude Include="ChatService.h" />
+    <ClInclude Include="Api.h" />
+  </ItemGroup>
+</Project>
